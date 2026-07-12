@@ -52,6 +52,26 @@ function Sanjussai() {
         window.addEventListener("keydown", resumeOnGesture);
         window.addEventListener("touchstart", resumeOnGesture);
 
+        // message listener: TickCounter may post messages from its iframe; play tick on those messages
+        const onMessage = (ev) => {
+            try {
+                if (!ev || !ev.origin) return;
+                if (ev.origin.includes("tickcounter.com")) {
+                    playTick();
+                    return;
+                }
+                // sometimes the widget posts a structured message from other origins with identifying data
+                const d = ev.data;
+                if (d && typeof d === "object") {
+                    // play on heuristics if it looks like a tickcounter message
+                    if (d.widget === "tickcounter" || d.type === "tick" || d.tick) playTick();
+                }
+            } catch (e) {
+                // ignore
+            }
+        };
+        window.addEventListener('message', onMessage, false);
+
         // create the countdown anchor
         const a = document.createElement("a");
         a.setAttribute("data-type", "countdown");
