@@ -4,7 +4,8 @@ function Sanjussai() {
     const containerRef = useRef(null);
     const audioCtxRef = useRef(null);
     const prevTextRef = useRef(null);
-    const pollRef = useRef(null);
+    const attachIntervalRef = useRef(null);
+    const observerRef = useRef(null);
 
     useEffect(() => {
         const container = containerRef.current;
@@ -19,26 +20,37 @@ function Sanjussai() {
         }
 
         function playTick() {
-            const ctx = ensureAudioContext();
+            const ctx = audioCtxRef.current || ensureAudioContext();
             if (!ctx) return;
 
-            // small click using oscillator and short gain envelope
+            // short percussive tick (sine oscillator + gain envelope)
             const o = ctx.createOscillator();
             const g = ctx.createGain();
-            o.type = "square";
-            o.frequency.value = 1000;
-            g.gain.value = 0.00001; // start very low to avoid pops on some browsers
+            o.type = "sine";
+            o.frequency.value = 880;
             o.connect(g);
             g.connect(ctx.destination);
 
             const now = ctx.currentTime;
-            g.gain.setValueAtTime(0.00001, now);
-            g.gain.exponentialRampToValueAtTime(0.15, now + 0.001);
-            g.gain.exponentialRampToValueAtTime(0.00001, now + 0.06);
+            g.gain.setValueAtTime(0.0001, now);
+            g.gain.linearRampToValueAtTime(0.12, now + 0.004);
+            g.gain.linearRampToValueAtTime(0.0001, now + 0.08);
 
             o.start(now);
-            o.stop(now + 0.07);
+            o.stop(now + 0.09);
         }
+
+        // resume audio context on first user gesture (required by many browsers)
+        const resumeOnGesture = () => {
+            const ctx = ensureAudioContext();
+            if (ctx && ctx.state === "suspended") ctx.resume();
+            window.removeEventListener("pointerdown", resumeOnGesture);
+            window.removeEventListener("keydown", resumeOnGesture);
+            window.removeEventListener("touchstart", resumeOnGesture);
+        };
+        window.addEventListener("pointerdown", resumeOnGesture);
+        window.addEventListener("keydown", resumeOnGesture);
+        window.addEventListener("touchstart", resumeOnGesture);
 
         // create the countdown anchor
         const a = document.createElement("a");
@@ -59,43 +71,49 @@ function Sanjussai() {
             document.body.appendChild(js);
         }
 
-        // allow user interaction to resume audio context (browsers may require gesture)
-        const resumeOnInteraction = () => {
-            const ctx = ensureAudioContext();
-            if (ctx && ctx.state === "suspended") ctx.resume();
-        };
-        container.addEventListener("click", resumeOnInteraction);
-        container.addEventListener("keydown", resumeOnInteraction);
-
-        // poll the rendered widget for changes in displayed text and play a tick when it changes
-        const targetEl = () => container.querySelector(".tickcounter");
-
-        pollRef.current = setInterval(() => {
-            const el = targetEl();
+        // attach a MutationObserver to the widget once it's rendered; if it isn't ready yet, poll briefly
+        function tryAttachObserver() {
+            const el = container.querySelector(".tickcounter");
             if (!el) return;
-            const text = el.textContent && el.textContent.trim();
-            if (!text) return;
-            if (prevTextRef.current == null) {
-                prevTextRef.current = text; // initialize without playing on first read
-                return;
-            }
-            if (text !== prevTextRef.current) {
-                // text changed -> likely a tick
+
+            // observe subtree text/child changes and trigger tick when displayed text changes
+            const observer = new MutationObserver(() => {
                 try {
-                    playTick();
+                    const text = (el.innerText || el.textContent || "").trim();
+                    if (!text) return;
+                    if (prevTextRef.current == null) {
+                        prevTextRef.current = text; // initialize without sound on first render
+                        return;
+                    }
+                    if (text !== prevTextRef.current) {
+                        prevTextRef.current = text;
+                        playTick();
+                    }
                 } catch (e) {
-                    // ignore audio errors
+                    // ignore
                 }
-                prevTextRef.current = text;
+            });
+
+            observer.observe(el, { childList: true, subtree: true, characterData: true });
+            observerRef.current = observer;
+
+            if (attachIntervalRef.current) {
+                clearInterval(attachIntervalRef.current);
+                attachIntervalRef.current = null;
             }
-        }, 300);
+        }
+
+        attachIntervalRef.current = setInterval(tryAttachObserver, 250);
+        // try immediately once too
+        tryAttachObserver();
 
         return () => {
-            if (pollRef.current) clearInterval(pollRef.current);
-            container.removeEventListener("click", resumeOnInteraction);
-            container.removeEventListener("keydown", resumeOnInteraction);
+            if (attachIntervalRef.current) clearInterval(attachIntervalRef.current);
+            if (observerRef.current) observerRef.current.disconnect();
+            window.removeEventListener("pointerdown", resumeOnGesture);
+            window.removeEventListener("keydown", resumeOnGesture);
+            window.removeEventListener("touchstart", resumeOnGesture);
             if (container.contains(a)) container.removeChild(a);
-            // leave the global loader script in place in case other pages use it
         };
     }, []);
 
