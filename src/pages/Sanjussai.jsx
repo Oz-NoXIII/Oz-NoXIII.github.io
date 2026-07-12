@@ -48,7 +48,7 @@ function Sanjussai() {
                     const src = ctx.createBufferSource();
                     src.buffer = audioBufferRef.current;
                     const g = ctx.createGain();
-                    g.gain.value = 1.0;
+                    g.gain.value = 0.6;
                     src.connect(g);
                     g.connect(ctx.destination);
                     src.start();
@@ -62,8 +62,8 @@ function Sanjussai() {
                     osc.connect(gain);
                     gain.connect(ctx.destination);
                     gain.gain.setValueAtTime(0.0001, now);
-                    gain.gain.linearRampToValueAtTime(0.35, now + 0.003);
-                    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
+                    gain.gain.linearRampToValueAtTime(0.15, now + 0.003);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.05);
                     osc.start(now);
                     osc.stop(now + 0.07);
                 }
