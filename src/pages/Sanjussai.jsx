@@ -57,15 +57,15 @@ function Sanjussai() {
                     const now = ctx.currentTime;
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
-                    osc.type = "square";
-                    osc.frequency.value = 1400;
+                    osc.type = "sine";
+                    osc.frequency.value = 3000;
                     osc.connect(gain);
                     gain.connect(ctx.destination);
                     gain.gain.setValueAtTime(0.0001, now);
-                    gain.gain.linearRampToValueAtTime(0.15, now + 0.003);
+                    gain.gain.linearRampToValueAtTime(0.12, now + 0.002);
                     gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.05);
                     osc.start(now);
-                    osc.stop(now + 0.07);
+                    osc.stop(now + 0.05);
                 }
             } catch (e) {
                 // ignore audio errors
@@ -154,7 +154,7 @@ function Sanjussai() {
     return (
         <main style={{backgroundColor: "#000", color: "#00ff41", minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "'Courier New', monospace, ui-monospace, SFMono-Regular", padding: "2rem"}}>
             <div style={{textAlign: "center"}}>
-                <h1 style={{margin: 0, fontSize: "3rem", opacity: 0.95, letterSpacing: "0.04em"}}>Nova aetas adventat</h1>
+                <h1 style={{margin: 0, fontSize: "4rem", opacity: 0.95, letterSpacing: "0.04em"}}>NOVA AETAS ADVENTAT</h1>
 
                 <div aria-live="polite" style={{display: "flex", gap: "1rem", justifyContent: "center", alignItems: "center", margin: "2rem 0"}}>
                     <div style={boxStyle} aria-label={`${parts.days} days`}>{parts.days}</div>
