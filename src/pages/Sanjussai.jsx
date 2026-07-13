@@ -25,23 +25,18 @@ function Sanjussai() {
         function rand() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
 
         const fHigh = 2200; // high click component
-        const fLow = 80;    // low thump component (sub-bass)
 
         for (let i = 0; i < length; i++) {
             const t = i / sampleRate;
-            // envelopes
-            const envHigh = Math.exp(-t * 90); // very fast decay for click
-            const envLow = Math.exp(-t * 6);   // slower decay for thump
-
-            // low thump: decaying sine with slight downward pitch bend for weight
-            const low = Math.sin(2 * Math.PI * (fLow + 6 * (1 - t / duration)) * t) * envLow * 0.25;
+            // envelope for click (fast decay)
+            const envHigh = Math.exp(-t * 120);
 
             // high click: deterministic filtered noise + resonant sine
             const noise = (rand() * 2 - 1) * Math.exp(-t * 200) * 0.7;
-            const res = Math.sin(2 * Math.PI * fHigh * t) * envHigh * 0.45;
+            const res = Math.sin(2 * Math.PI * fHigh * t) * envHigh * 0.6;
 
-            // combine and scale down
-            let sample = low + noise * 0.28 + res * 0.45;
+            // combine and scale down (no low thump)
+            let sample = noise * 0.28 + res * 0.6;
             // soft clip
             if (sample > 1) sample = 1;
             if (sample < -1) sample = -1;
