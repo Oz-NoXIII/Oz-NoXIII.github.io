@@ -182,26 +182,26 @@ function Sanjussai() {
         background: "rgba(0,50,0,0.08)",
         border: "1px solid rgba(0,255,65,0.14)",
         padding: "0.6rem",
-        minWidth: "0",
-        flex: "1 1 0",
+        minWidth: "8rem",
+                flex: "1 1 14rem",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center",
         fontVariantNumeric: "tabular-nums",
         fontWeight: 800,
-        fontSize: "min(22vw, 28rem)",
+            fontSize: "clamp(3rem, 12vw, 8rem)",
         borderRadius: "8px",
         color: "#00ff41",
         boxShadow: "none",
     };
 
     return (
-        <main style={{backgroundColor: "#000", color: "#00ff41", minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "Consolas, 'Roboto Mono', 'Fira Code', 'Courier New', monospace, ui-monospace, SFMono-Regular", padding: "2rem"}}>
-            <div style={{textAlign: "center"}}>
-                <h1 style={{margin: 0, fontSize: "6.5rem", opacity: 0.98, letterSpacing: "0.04em", fontWeight: 900, textShadow: "0 3px 10px rgba(0,255,65,0.08), 0 1px 0 #000"}}>NOVA AETAS ADVENTAT</h1>
+        <main style={{backgroundColor: "#000", color: "#00ff41", minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "Consolas, 'Roboto Mono', 'Fira Code', 'Courier New', monospace, ui-monospace, SFMono-Regular", padding: "1rem"}}>
+                    <div style={{textAlign: "center", width: "100%"}}>
+                <h1 style={{margin: 0, fontSize: "clamp(2.5rem, 6vw, 6.5rem)", opacity: 0.98, letterSpacing: "0.04em", fontWeight: 900, textShadow: "0 3px 10px rgba(0,255,65,0.08), 0 1px 0 #000"}}>NOVA AETAS ADVENTAT</h1>
 
-                <div aria-live="polite" style={{display: "flex", gap: "1rem", justifyContent: "center", alignItems: "center", margin: "2rem 0"}}>
+                        <div aria-live="polite" style={{display: "flex", gap: "1rem", justifyContent: "center", alignItems: "center", margin: "1.5rem 0", width: "100%", flexWrap: "wrap"}}>
                     <div style={boxStyle} aria-label={`${parts.days} days`}>{parts.days}</div>
                     <div style={boxStyle} aria-label={`${parts.hours} hours`}>{parts.hours}</div>
                     <div style={boxStyle} aria-label={`${parts.minutes} minutes`}>{parts.minutes}</div>
