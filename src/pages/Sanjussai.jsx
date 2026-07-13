@@ -55,17 +55,33 @@ function Sanjussai() {
                 } else {
                     // fallback deterministic short oscillator if buffer missing
                     const now = ctx.currentTime;
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    osc.type = "sine";
-                    osc.frequency.value = 3000;
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-                    gain.gain.setValueAtTime(0.0001, now);
-                    gain.gain.linearRampToValueAtTime(0.12, now + 0.002);
-                    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.05);
-                    osc.start(now);
-                    osc.stop(now + 0.05);
+                    // high click oscillator
+                    const highOsc = ctx.createOscillator();
+                    const highGain = ctx.createGain();
+                    highOsc.type = "sine";
+                    highOsc.frequency.value = 2500;
+                    highOsc.connect(highGain);
+                    highGain.connect(ctx.destination);
+                    // low thump oscillator
+                    const lowOsc = ctx.createOscillator();
+                    const lowGain = ctx.createGain();
+                    lowOsc.type = "sine";
+                    lowOsc.frequency.value = 120;
+                    lowOsc.connect(lowGain);
+                    lowGain.connect(ctx.destination);
+
+                    highGain.gain.setValueAtTime(0.0001, now);
+                    highGain.gain.linearRampToValueAtTime(0.12, now + 0.002);
+                    highGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.045);
+
+                    lowGain.gain.setValueAtTime(0.0001, now);
+                    lowGain.gain.linearRampToValueAtTime(0.18, now + 0.008);
+                    lowGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.055);
+
+                    highOsc.start(now);
+                    highOsc.stop(now + 0.05);
+                    lowOsc.start(now);
+                    lowOsc.stop(now + 0.06);
                 }
             } catch (e) {
                 // ignore audio errors
