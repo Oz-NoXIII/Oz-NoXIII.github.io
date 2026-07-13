@@ -19,24 +19,31 @@ function Sanjussai() {
         const length = Math.floor(duration * sampleRate);
         const buffer = ctx.createBuffer(1, length, sampleRate);
         const data = buffer.getChannelData(0);
-n        // deterministic LCG for repeatable 'noise'
+
+        // deterministic LCG for repeatable 'noise'
         let seed = 777777;
         function rand() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
-n        const fRes = 2800; // resonant click frequency
+
+        const fRes = 2800; // resonant click frequency
         const fMetal = 5200; // metallic overtone
-n        for (let i = 0; i < length; i++) {
+
+        for (let i = 0; i < length; i++) {
             const t = i / sampleRate;
             // envelopes
             const envClick = Math.exp(-t * 140); // very fast for click
             const envMetal = Math.exp(-t * 90);  // slightly longer metallic ring
             const envNoise = Math.exp(-t * 180);
-n            // resonant click (sine)
+
+            // resonant click (sine)
             const click = Math.sin(2 * Math.PI * fRes * t) * envClick * 0.55;
-n            // metallic overtone (higher partial)
+
+            // metallic overtone (higher partial)
             const metal = Math.sin(2 * Math.PI * fMetal * t) * envMetal * 0.18;
-n            // short, filtered-like noise burst to emulate mechanical release
+
+            // short, filtered-like noise burst to emulate mechanical release
             const noise = (rand() * 2 - 1) * envNoise * 0.35;
-n            // combine with slight DC removal and scale
+
+            // combine with slight DC removal and scale
             let sample = (click + metal + noise) * 0.7;
             // soft clip
             if (sample > 1) sample = 1;
@@ -174,12 +181,12 @@ function Sanjussai() {
     const boxStyle = {
         background: "rgba(0,50,0,0.15)",
         border: "1px solid rgba(0,255,65,0.14)",
-        padding: "0.6rem 1.1rem",
-        minWidth: "5.2rem",
+        padding: "0.9rem 1.4rem",
+        minWidth: "7.2rem",
         textAlign: "center",
         fontVariantNumeric: "tabular-nums",
         fontWeight: 700,
-        fontSize: "3.6rem",
+        fontSize: "6rem",
         borderRadius: "6px",
         color: "#00ff41",
         boxShadow: "0 2px 6px rgba(0,255,65,0.06) inset",
@@ -188,7 +195,7 @@ function Sanjussai() {
     return (
         <main style={{backgroundColor: "#000", color: "#00ff41", minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "Consolas, 'Roboto Mono', 'Fira Code', 'Courier New', monospace, ui-monospace, SFMono-Regular", padding: "2rem"}}>
             <div style={{textAlign: "center"}}>
-                <h1 style={{margin: 0, fontSize: "4.5rem", opacity: 0.98, letterSpacing: "0.04em", fontWeight: 900, textShadow: "0 3px 10px rgba(0,255,65,0.08), 0 1px 0 #000"}}>NOVA AETAS ADVENTAT</h1>
+                <h1 style={{margin: 0, fontSize: "6.5rem", opacity: 0.98, letterSpacing: "0.04em", fontWeight: 900, textShadow: "0 3px 10px rgba(0,255,65,0.08), 0 1px 0 #000"}}>NOVA AETAS ADVENTAT</h1>
 
                 <div aria-live="polite" style={{display: "flex", gap: "1rem", justifyContent: "center", alignItems: "center", margin: "2rem 0"}}>
                     <div style={boxStyle} aria-label={`${parts.days} days`}>{parts.days}</div>
