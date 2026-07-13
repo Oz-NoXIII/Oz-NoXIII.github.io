@@ -24,7 +24,7 @@ function Sanjussai() {
         let seed = 424242;
         function rand() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
 
-        const fHigh = 2200; // high click component
+        const fHigh = 2600; // high click component
 
         for (let i = 0; i < length; i++) {
             const t = i / sampleRate;
@@ -75,7 +75,7 @@ function Sanjussai() {
                     const highOsc = ctx.createOscillator();
                     const highGain = ctx.createGain();
                     highOsc.type = "sine";
-                    highOsc.frequency.value = 2200;
+                    highOsc.frequency.value = 2600;
                     highOsc.connect(highGain);
                     highGain.connect(ctx.destination);
 
