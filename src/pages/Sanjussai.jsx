@@ -179,17 +179,21 @@ function Sanjussai() {
     const parts = splitRemaining(remaining);
 
     const boxStyle = {
-        background: "rgba(0,50,0,0.15)",
+        background: "rgba(0,50,0,0.08)",
         border: "1px solid rgba(0,255,65,0.14)",
-        padding: "0.9rem 1.4rem",
-        minWidth: "7.2rem",
+        padding: "0.6rem",
+        minWidth: "0",
+        flex: "1 1 0",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
         textAlign: "center",
         fontVariantNumeric: "tabular-nums",
-        fontWeight: 700,
-        fontSize: "6rem",
-        borderRadius: "6px",
+        fontWeight: 800,
+        fontSize: "min(22vw, 28rem)",
+        borderRadius: "8px",
         color: "#00ff41",
-        boxShadow: "0 2px 6px rgba(0,255,65,0.06) inset",
+        boxShadow: "none",
     };
 
     return (
@@ -204,7 +208,6 @@ function Sanjussai() {
                     <div style={boxStyle} aria-label={`${parts.seconds} seconds`}>{parts.seconds}</div>
                 </div>
 
-                <p style={{opacity: 0.7, marginTop: "0.5rem"}}>Countdown to {new Date(TARGET_ISO).toLocaleString()}</p>
                 {!soundEnabled && <p style={{marginTop: "1rem", opacity: 0.9}}>Click or press any key to enable sound</p>}
             </div>
         </main>
