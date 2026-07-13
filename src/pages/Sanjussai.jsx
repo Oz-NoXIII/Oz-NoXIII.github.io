@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+﻿import React, { useEffect, useRef, useState } from "react";
 
 function Sanjussai() {
     // Target: Jul 13 2027 00:00 CEST (UTC+2)
@@ -12,18 +12,40 @@ function Sanjussai() {
     const intervalRef = useRef(null);
     const timeoutRef = useRef(null);
 
-    // create a deterministic click buffer for identical tick sound each time    function createClickBuffer(ctx) {
+    // create a deterministic click buffer that mimics the referenced ticking sound (layered thump + click + filtered noise)
+    function createClickBuffer(ctx) {
         const sampleRate = ctx.sampleRate || 48000;
-        const duration = 0.07; // seconds
+        const duration = 0.08; // seconds total
         const length = Math.floor(duration * sampleRate);
         const buffer = ctx.createBuffer(1, length, sampleRate);
         const data = buffer.getChannelData(0);
-        const freq = 1400;
+
+        // deterministic LCG for repeatable 'noise'
+        let seed = 424242;
+        function rand() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
+
+        const fHigh = 2200; // high click component
+        const fLow = 80;    // low thump component (sub-bass)
+
         for (let i = 0; i < length; i++) {
             const t = i / sampleRate;
-            // quick exponential-like decay envelope
-            const env = Math.pow(1 - t / duration, 2);
-            data[i] = Math.sin(2 * Math.PI * freq * t) * env * 0.9;
+            // envelopes
+            const envHigh = Math.exp(-t * 90); // very fast decay for click
+            const envLow = Math.exp(-t * 6);   // slower decay for thump
+
+            // low thump: decaying sine with slight downward pitch bend for weight
+            const low = Math.sin(2 * Math.PI * (fLow + 6 * (1 - t / duration)) * t) * envLow * 0.6;
+
+            // high click: deterministic filtered noise + resonant sine
+            const noise = (rand() * 2 - 1) * Math.exp(-t * 200) * 0.7;
+            const res = Math.sin(2 * Math.PI * fHigh * t) * envHigh * 0.45;
+
+            // combine and scale down
+            let sample = low + noise * 0.28 + res * 0.45;
+            // soft clip
+            if (sample > 1) sample = 1;
+            if (sample < -1) sample = -1;
+            data[i] = sample * 0.55;
         }
         return buffer;
     }
@@ -53,20 +75,19 @@ function Sanjussai() {
                     g.connect(ctx.destination);
                     src.start();
                 } else {
-                    // fallback deterministic short oscillator if buffer missing
+                    // fallback: layered oscillators
                     const now = ctx.currentTime;
-                    // high click oscillator
                     const highOsc = ctx.createOscillator();
                     const highGain = ctx.createGain();
                     highOsc.type = "sine";
-                    highOsc.frequency.value = 2500;
+                    highOsc.frequency.value = 2200;
                     highOsc.connect(highGain);
                     highGain.connect(ctx.destination);
-                    // low thump oscillator
+
                     const lowOsc = ctx.createOscillator();
                     const lowGain = ctx.createGain();
                     lowOsc.type = "sine";
-                    lowOsc.frequency.value = 120;
+                    lowOsc.frequency.value = 80;
                     lowOsc.connect(lowGain);
                     lowGain.connect(ctx.destination);
 
@@ -108,7 +129,8 @@ function Sanjussai() {
         const onVisibility = () => updateRemaining();
         document.addEventListener("visibilitychange", onVisibility);
 
-        // auto-enable sound on first gesture anywhere; create deterministic buffer once        const onFirstGesture = () => {
+        // auto-enable sound on first gesture anywhere; create deterministic buffer once
+        const onFirstGesture = () => {
             const Ctx = window.AudioContext || window.webkitAudioContext;
             if (!audioCtxRef.current && Ctx) audioCtxRef.current = new Ctx();
             if (audioCtxRef.current && audioCtxRef.current.state === "suspended") audioCtxRef.current.resume().catch(() => {});
@@ -168,9 +190,9 @@ function Sanjussai() {
     };
 
     return (
-        <main style={{backgroundColor: "#000", color: "#00ff41", minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "'Courier New', monospace, ui-monospace, SFMono-Regular", padding: "2rem"}}>
+        <main style={{backgroundColor: "#000", color: "#00ff41", minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "Consolas, 'Roboto Mono', 'Fira Code', 'Courier New', monospace, ui-monospace, SFMono-Regular", padding: "2rem"}}>
             <div style={{textAlign: "center"}}>
-                <h1 style={{margin: 0, fontSize: "4rem", opacity: 0.95, letterSpacing: "0.04em"}}>NOVA AETAS ADVENTAT</h1>
+                <h1 style={{margin: 0, fontSize: "4.5rem", opacity: 0.98, letterSpacing: "0.04em", fontWeight: 900, textShadow: "0 3px 10px rgba(0,255,65,0.08), 0 1px 0 #000"}}>NOVA AETAS ADVENTAT</h1>
 
                 <div aria-live="polite" style={{display: "flex", gap: "1rem", justifyContent: "center", alignItems: "center", margin: "2rem 0"}}>
                     <div style={boxStyle} aria-label={`${parts.days} days`}>{parts.days}</div>
