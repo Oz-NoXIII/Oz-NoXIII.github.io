@@ -34,7 +34,7 @@ function Sanjussai() {
             const envLow = Math.exp(-t * 6);   // slower decay for thump
 
             // low thump: decaying sine with slight downward pitch bend for weight
-            const low = Math.sin(2 * Math.PI * (fLow + 6 * (1 - t / duration)) * t) * envLow * 0.6;
+            const low = Math.sin(2 * Math.PI * (fLow + 6 * (1 - t / duration)) * t) * envLow * 0.25;
 
             // high click: deterministic filtered noise + resonant sine
             const noise = (rand() * 2 - 1) * Math.exp(-t * 200) * 0.7;
