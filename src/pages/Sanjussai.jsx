@@ -12,35 +12,36 @@ function Sanjussai() {
     const intervalRef = useRef(null);
     const timeoutRef = useRef(null);
 
-    // create a deterministic click buffer that mimics the referenced ticking sound (layered thump + click + filtered noise)
+    // create a deterministic click buffer that sounds like a mechanical, cinematic ticking clock
     function createClickBuffer(ctx) {
         const sampleRate = ctx.sampleRate || 48000;
-        const duration = 0.08; // seconds total
+        const duration = 0.06; // seconds total
         const length = Math.floor(duration * sampleRate);
         const buffer = ctx.createBuffer(1, length, sampleRate);
         const data = buffer.getChannelData(0);
-
-        // deterministic LCG for repeatable 'noise'
-        let seed = 424242;
+n        // deterministic LCG for repeatable 'noise'
+        let seed = 777777;
         function rand() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
-
-        const fHigh = 2600; // high click component
-
-        for (let i = 0; i < length; i++) {
+n        const fRes = 2800; // resonant click frequency
+        const fMetal = 5200; // metallic overtone
+n        for (let i = 0; i < length; i++) {
             const t = i / sampleRate;
-            // envelope for click (fast decay)
-            const envHigh = Math.exp(-t * 120);
-
-            // high click: deterministic filtered noise + resonant sine
-            const noise = (rand() * 2 - 1) * Math.exp(-t * 200) * 0.7;
-            const res = Math.sin(2 * Math.PI * fHigh * t) * envHigh * 0.6;
-
-            // combine and scale down (no low thump)
-            let sample = noise * 0.28 + res * 0.6;
+            // envelopes
+            const envClick = Math.exp(-t * 140); // very fast for click
+            const envMetal = Math.exp(-t * 90);  // slightly longer metallic ring
+            const envNoise = Math.exp(-t * 180);
+n            // resonant click (sine)
+            const click = Math.sin(2 * Math.PI * fRes * t) * envClick * 0.55;
+n            // metallic overtone (higher partial)
+            const metal = Math.sin(2 * Math.PI * fMetal * t) * envMetal * 0.18;
+n            // short, filtered-like noise burst to emulate mechanical release
+            const noise = (rand() * 2 - 1) * envNoise * 0.35;
+n            // combine with slight DC removal and scale
+            let sample = (click + metal + noise) * 0.7;
             // soft clip
             if (sample > 1) sample = 1;
             if (sample < -1) sample = -1;
-            data[i] = sample * 0.55;
+            data[i] = sample * 0.5;
         }
         return buffer;
     }
