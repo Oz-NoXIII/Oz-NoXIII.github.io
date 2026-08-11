@@ -31,23 +31,24 @@ export const projects = [
         title: "XPath Query Containment",
         image: projectImages.xpathQueryContainment,
         shortDescription:
-            "Master’s thesis on formal reasoning and implementation of XPath query containment.",
+            "Master's thesis on XPath query containment and equivalence, with a Python web app implementing the algorithms.",
         fullDescription: [
-            "Master’s thesis focused on XPath query containment, combining database theory with implementation-oriented exploration.",
-            "The work investigates whether one XPath query is guaranteed to be contained within another, based on formal models.",
-            "It involves studying theoretical results from the literature and exploring practical approaches for restricted subsets of XPath.",
-            "A key objective is also to make the subject more accessible, by simplifying and structuring the material for bachelor-level students.",
-            "The project bridges formal reasoning, implementation, and pedagogical clarity."
+            "Master's thesis studying query containment for a restricted fragment of XPath, with applications to query optimization.",
+            "Formalized the translation from XPath to tree pattern queries (TPQs) and identified the limits of this correspondence, showing the two formalisms are not equivalent.",
+            "Worked through the homomorphism-based methods from the literature for testing query containment to produce a more detailed and rigorous explanation than the original sources.",
+            "Built a Python web application implementing the full pipeline: parsing XPath, constructing tree patterns, and testing containment and equivalence between queries.",
+            "Restructured dense results from the literature into a clearer, more didactic presentation suitable for bachelor-level students.",
+            "Defended in June 2026, under the supervision of Prof. Jef Wijsen at the University of Mons."
         ],
-        tags: ["Master’s Thesis", "Databases", "Theory", "Research"],
+        tags: ["Master's Thesis", "Databases", "Algorithms", "Python"],
         skills: [
             "Formal Reasoning",
             "Database Theory",
-            "Algorithmic Thinking",
-            "Abstraction",
+            "Algorithm Design & Implementation",
+            "Python",
             "Technical Communication"
         ],
-        status: "Ongoing"
+        status: "Completed"
     },
 
     {

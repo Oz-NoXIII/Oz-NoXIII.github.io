@@ -24,13 +24,19 @@ function ProjectDetail() {
 
             <div className="status-badge">{project.status}</div>
 
-            <div className="tag-list large">
-                {project.tags.map((tag) => (
-                    <span key={tag} className="tag">
-            {tag}
-          </span>
-                ))}
-            </div>
+            {project.skills?.length ? (
+                <div className="project-detail-section">
+                    <h3 className="project-detail-heading">Skills</h3>
+                    <div className="project-skills project-skills-detail">
+                        {project.skills.map((skill) => (
+                            <span key={skill} className="project-skill">
+                                {skill}
+                            </span>
+                        ))}
+                    </div>
+                    <h2> </h2>
+                </div>
+            ) : null}
 
             <div className="project-detail-content">
                 {project.fullDescription.map((paragraph) => (
@@ -39,19 +45,6 @@ function ProjectDetail() {
                     </p>
                 ))}
             </div>
-
-            {project.skills?.length ? (
-                <div className="project-detail-section">
-                    <h2 className="project-detail-heading">Skills</h2>
-                    <div className="project-skills project-skills-detail">
-                        {project.skills.map((skill) => (
-                            <span key={skill} className="project-skill">
-                                {skill}
-                            </span>
-                        ))}
-                    </div>
-                </div>
-            ) : null}
         </section>
     );
 }
