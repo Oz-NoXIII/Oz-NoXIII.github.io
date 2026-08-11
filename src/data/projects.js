@@ -40,7 +40,7 @@ export const projects = [
             "Restructured dense results from the literature into a clearer, more didactic presentation suitable for bachelor-level students.",
             "Defended in June 2026, under the supervision of Prof. Jef Wijsen at the University of Mons."
         ],
-        tags: ["Master's Thesis", "Databases", "Algorithms", "Python"],
+        tags: ["Master's Thesis", "Databases", "Algorithms"],
         skills: [
             "Formal Reasoning",
             "Database Theory",
@@ -63,7 +63,7 @@ export const projects = [
             "It included testing, validation of features, and documentation of the setup.",
             "A Python Shiny interface was developed to present the system and make it accessible for demonstration purposes."
         ],
-        tags: ["Distributed Systems", "Apache Ozone", "Infrastructure", "High Availability"],
+        tags: ["Distributed Systems", "Infrastructure", "High Availability"],
         skills: [
             "Distributed Systems",
             "Linux",
@@ -111,7 +111,7 @@ export const projects = [
             "Explainability tools are integrated to visualize and better understand model behavior.",
             "The project is structured around a custom MVC architecture to support modular experimentation."
         ],
-        tags: ["Deep Learning", "Model Compression", "XAI", "Framework"],
+        tags: ["Deep Learning", "Model Compression", "XAI"],
         skills: [
             "PyTorch",
             "PyTorch Lightning",
@@ -180,7 +180,7 @@ export const projects = [
             "The focus was on applying software engineering principles in a structured and realistic scenario.",
             "Version control and collaborative development practices were also used."
         ],
-        tags: ["Software Engineering", "UML", "Java", "System Design"],
+        tags: ["UML", "Java", "System Design"],
         skills: [
             "Java",
             "UML",
@@ -224,7 +224,7 @@ export const projects = [
             "It focuses on language design, formal grammars, and transformation of high-level constructs into executable representations.",
             "The work highlights core concepts of compiler construction and low-level program representation."
         ],
-        tags: ["Compiler", "Languages", "Parsing", "Theory"],
+        tags: ["Compiler", "Custom Languages", "Parsing"],
         skills: [
             "Compiler Design",
             "Lexical Analysis",
